@@ -1,0 +1,55 @@
+plugins {
+    id 'java'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+ext {
+    restAssuredVersion = '6.0.0'
+    allureVersion = '2.35.3'
+    lombokVersion = '1.18.46'
+    testngVersion = '7.12.0'
+    playwrightVersion = '1.62.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // API
+    testImplementation "io.rest-assured:rest-assured:${restAssuredVersion}"
+
+    // Allure Reports
+    testImplementation "io.qameta.allure:allure-rest-assured:${allureVersion}"
+    testImplementation "io.qameta.allure:allure-testng:${allureVersion}"
+
+    // UI
+    implementation "com.microsoft.playwright:playwright:${playwrightVersion}"
+
+    // Utils
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    // Testing
+    testImplementation "org.testng:testng:${testngVersion}"
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+test {
+    useTestNG() {
+    }
+
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true
+    }
+
+    systemProperty 'allure.results.directory', 'build/allure-results'
+}
