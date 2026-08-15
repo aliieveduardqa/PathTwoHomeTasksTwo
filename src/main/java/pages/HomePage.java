@@ -1,7 +1,7 @@
 package pages;
 
 import com.microsoft.playwright.Locator;
-import com.microsoft.playwright.options.WaitForSelectorState;
+import io.qameta.allure.Step;
 
 public class HomePage extends BasePage {
 
@@ -13,32 +13,25 @@ public class HomePage extends BasePage {
     private final Locator searchGameCount = locator("(//*[@class='searching-lists__title']//span)[2]");
     private final Locator searchGamePresent = locator("(//*[@class='searching-lists__games']//li)[1]");
 
+    @Step("Click on Login Button")
     public void clickLoginBtn() {
-        clickWithWait(loginBtn);
+        clickWithWait(loginBtn, "Login Button");
     }
 
+    @Step("Click on Register Button")
     public void clickRegisterBtn() {
-        clickWithWait(registerBtn);
+        clickWithWait(registerBtn, "Register Button");
     }
 
-    public Locator getPayInButton() {
-        return payInBtn;
-    }
-
-    public Locator getLogoutButton() {
-        return loginBtn;
-    }
-
+    @Step("Search for product: {productName}")
     public void searchForProduct(String productName) {
+        logger.info("Searching for product: {}", productName);
         headerSearchBtn.click();
         searchInputFld.fill(productName);
     }
 
-    public Locator getSearchCounterLocator() {
-        return searchGameCount;
-    }
-
-    public Locator getSearchGamePresentLocator() {
-        return searchGamePresent;
-    }
+    public Locator getPayInButton() { return payInBtn; }
+    public Locator getLogoutButton() { return loginBtn; }
+    public Locator getSearchCounterLocator() { return searchGameCount; }
+    public Locator getSearchGamePresentLocator() { return searchGamePresent; }
 }

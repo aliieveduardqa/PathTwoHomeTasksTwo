@@ -1,6 +1,7 @@
 package pages;
 
 import com.microsoft.playwright.Locator;
+import io.qameta.allure.Step;
 
 public class RegisterPage extends BasePage {
 
@@ -20,7 +21,9 @@ public class RegisterPage extends BasePage {
 
     private final Locator registrationResult = locator("//*[contains(@class,'body-title-title-medium-b')][1]");
 
+    @Step("Register new user via Phone: {phone}")
     public void registerPhoneUser(String phone, String password) {
+        logger.info("Registering user via phone: {}", phone);
         phoneRegistrationBtn.click();
         phoneRegistrationInput.fill(phone);
         passRegistrationPhoneInput.fill(password);
@@ -28,7 +31,9 @@ public class RegisterPage extends BasePage {
         registrationResult.click();
     }
 
+    @Step("Register new user via Email: {email}")
     public void registerEmailUser(String email, String password) {
+        logger.info("Registering user via email: {}", email);
         emailRegistrationBtn.click();
         emailRegistrationInput.fill(email);
         passRegistrationEmailInput.fill(password);

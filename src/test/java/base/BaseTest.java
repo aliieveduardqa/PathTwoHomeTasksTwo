@@ -2,6 +2,8 @@ package base;
 
 import com.microsoft.playwright.*;
 import io.qameta.allure.Attachment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -11,6 +13,7 @@ import utils.PageManager;
 import java.nio.file.Paths;
 
 public class BaseTest {
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     protected Playwright playwright;
     protected Browser browser;
     protected BrowserContext context;
@@ -18,6 +21,7 @@ public class BaseTest {
 
     @BeforeMethod
     public void setUp() {
+        logger.info("Setting up Playwright and Browser...");
         playwright = Playwright.create();
 
         BrowserType.LaunchOptions options = new BrowserType.LaunchOptions()
@@ -36,7 +40,6 @@ public class BaseTest {
         }
 
         context = browser.newContext();
-
         context.tracing().start(new Tracing.StartOptions()
                 .setScreenshots(true)
                 .setSnapshots(true)
@@ -44,19 +47,24 @@ public class BaseTest {
 
         page = context.newPage();
         PageManager.setPage(page);
-        page.navigate(ConfigReader.getProperty("baseUrl"));
+
+        String baseUrl = ConfigReader.getProperty("baseUrl");
+        logger.info("Navigating to: {}", baseUrl);
+        page.navigate(baseUrl);
     }
 
     @AfterMethod
     public void tearDown(ITestResult result) {
         if (result.getStatus() == ITestResult.FAILURE) {
+            logger.error("Test failed! Taking screenshot and saving trace.");
             byte[] screenshot = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
             attachScreenshotToAllure(screenshot);
 
             String traceName = "test-output/traces/" + result.getName() + "_trace.zip";
             context.tracing().stop(new Tracing.StopOptions().setPath(Paths.get(traceName)));
-            System.out.println("Trace saved: " + traceName);
+            logger.info("Trace saved: {}", traceName);
         } else {
+            logger.info("Test passed successfully.");
             context.tracing().stop();
         }
 
