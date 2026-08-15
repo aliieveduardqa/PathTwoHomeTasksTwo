@@ -1,59 +1,54 @@
 package pages;
 
 import com.microsoft.playwright.Locator;
-import com.microsoft.playwright.Page;
 
-public class LoginPage {
-    private final Page page;
+public class LoginPage extends BasePage {
 
-    private final String phoneLoginBtn = "//*[@data-id='password-recovery-phone-tab-button']";
-    private final String emailLoginBtn = "//*[@data-id='password-recovery-email-tab-button']";
+    private final Locator phoneLoginBtn = locator("//*[@data-id='password-recovery-phone-tab-button']");
+    private final Locator emailLoginBtn = locator("//*[@data-id='password-recovery-email-tab-button']");
 
-    private final String phoneLoginInput = "//*[@name='auth_phone']";
-    private final String passLoginPhoneInput = "//*[@name='password_phone']";
+    private final Locator phoneLoginInput = locator("//*[@name='auth_phone']");
+    private final Locator passLoginPhoneInput = locator("//*[@name='password_phone']");
 
-    private final String emailLoginInput = "//*[@name='auth_email']";
-    private final String passLoginEmailInput = "//*[@name='password_email']";
+    private final Locator emailLoginInput = locator("//*[@name='auth_email']");
+    private final Locator passLoginEmailInput = locator("//*[@name='password_email']");
 
-    private final String loginBtn = "//*[contains(@class,'auth-form__submit')][1]";
+    private final Locator loginBtn = locator("//*[contains(@class,'auth-form__submit')][1]");
 
-    private final String errorLoginInputMsg = "(//*[@data-id='input-message-error'])[1]";
-    private final String errorLoginPassInputMsg = "(//*[@data-id='input-message-error'])[2]";
-
-    public LoginPage(Page page) {
-        this.page = page;
-    }
+    private final Locator errorLoginInputMsg = locator("(//*[@data-id='input-message-error'])[1]");
+    private final Locator errorLoginPassInputMsg = locator("(//*[@data-id='input-message-error'])[2]");
 
     public void phoneLogin(String phone, String password) {
-        page.locator(phoneLoginBtn).click();
-        page.locator(phoneLoginInput).fill(phone);
-        page.locator(passLoginPhoneInput).fill(password);
-        page.locator(loginBtn).click();
+        phoneLoginBtn.click();
+        phoneLoginInput.fill(phone);
+        passLoginPhoneInput.fill(password);
+        loginBtn.click();
     }
 
     public void emailLogin(String email, String password) {
-        page.locator(emailLoginBtn).click();
-        page.locator(emailLoginInput).fill(email);
-        page.locator(passLoginEmailInput).fill(password);
-        page.locator(loginBtn).click();
+        emailLoginBtn.click();
+        emailLoginInput.fill(email);
+        passLoginEmailInput.fill(password);
+        loginBtn.click();
     }
+
     public void clickSubmitLoginBtn() {
-        page.locator(loginBtn).click();
+        loginBtn.click();
     }
 
     public Locator getErrorLoginInputLocator() {
-        return page.locator(errorLoginInputMsg);
+        return errorLoginInputMsg;
     }
 
     public Locator getErrorPasswordInputLocator() {
-        return page.locator(errorLoginPassInputMsg);
+        return errorLoginPassInputMsg;
     }
 
     public String getErrorInputMessage() {
-        return page.locator(errorLoginInputMsg).textContent().trim();
+        return errorLoginInputMsg.textContent().trim();
     }
 
     public String getErrorPasswordInputMessage() {
-        return page.locator(errorLoginPassInputMsg).textContent().trim();
+        return errorLoginPassInputMsg.textContent().trim();
     }
 }
