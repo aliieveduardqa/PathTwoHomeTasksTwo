@@ -60,6 +60,7 @@ public class BaseTest {
             context.tracing().stop();
         }
 
+        PageManager.removePage();
         page.close();
         context.close();
         browser.close();
