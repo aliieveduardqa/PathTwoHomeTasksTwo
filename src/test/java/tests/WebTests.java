@@ -12,7 +12,6 @@ import pages.HomePage;
 import pages.LoginPage;
 import pages.ProfilePage;
 import pages.RegisterPage;
-import utils.DataGenerator;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
@@ -33,23 +32,29 @@ public class WebTests extends BaseTest {
         profilePage = new ProfilePage();
     }
 
-    @Test(description = "Verify successful user registration")
+    @Test(
+            description = "Verify successful user registration",
+            dataProvider = "registrationData",
+            dataProviderClass = TestDataProvider.class
+    )
     @Story("Registration")
-    public void testSuccessfulRegistration() {
+    public void testSuccessfulRegistration(String email, String password) {
         homePage.clickRegisterBtn();
 
-        String uniqueEmail = DataGenerator.generateUniqueEmail("aliieveduardqa", "sharkscode.com");
-        logger.info("Registering new user with email: {}", uniqueEmail);
+        logger.info("Registering new user with email: {}", email);
+        registerPage.registerEmailUser(email, password);
 
-        registerPage.registerEmailUser(uniqueEmail, "222222");
+        homePage.clickClosedModalBtn();
+        homePage.clickClosedModalBtn();
 
-        assertThat(homePage.getPayInButton()).isVisible();
+        assertThat(homePage.getPayInButton())
+                .isVisible(new com.microsoft.playwright.assertions.LocatorAssertions.IsVisibleOptions().setTimeout(15_000));
     }
 
     @Test(description = "Verify validation messages on empty login")
     @Story("Login validation")
     public void testLoginWithOutFields() {
-        homePage.clickRegisterBtn();
+        homePage.clickLoginBtn();
 
         loginPage.clickSubmitLoginBtn();
 
@@ -57,8 +62,21 @@ public class WebTests extends BaseTest {
         assertThat(loginPage.getErrorPasswordInputLocator()).hasText("Обов'язкове поле");
     }
 
-    @Test(description = "Verify successful login using valid credentials",
-            dataProvider = "validLoginData", dataProviderClass = TestDataProvider.class)
+    @Test(description = "Verify validation messages on empty Registration fields")
+    @Story("Registration validation")
+    public void testRegistrationWithOutFields() {
+        homePage.clickRegisterBtn();
+
+        loginPage.clickSubmitRegistrationBtn();
+
+        assertThat(loginPage.getErrorLoginInputLocator()).hasText("Обов'язкове поле");
+        assertThat(loginPage.getErrorPasswordInputLocator()).hasText("Обов'язкове поле");
+    }
+
+    @Test(
+            description = "Verify successful login using valid credentials",
+            dataProvider = "validLoginData",
+            dataProviderClass = TestDataProvider.class)
     @Story("Login")
     public void testSuccessfulLogin(String email, String password) {
         homePage.clickLoginBtn();
@@ -67,8 +85,10 @@ public class WebTests extends BaseTest {
         assertThat(homePage.getPayInButton()).isVisible();
     }
 
-    @Test(description = "Verify successful logout functionality",
-            dataProvider = "validLoginData", dataProviderClass = TestDataProvider.class)
+    @Test(
+            description = "Verify successful logout functionality",
+            dataProvider = "validLoginData",
+            dataProviderClass = TestDataProvider.class)
     @Story("Logout")
     public void testLogout(String email, String password) {
         homePage.clickLoginBtn();
@@ -79,8 +99,10 @@ public class WebTests extends BaseTest {
         assertThat(homePage.getLogoutButton()).isVisible();
     }
 
-    @Test(description = "Verify searching for a specific product",
-            dataProvider = "searchQueries", dataProviderClass = TestDataProvider.class)
+    @Test(
+            description = "Verify searching for a specific product",
+            dataProvider = "searchQueries",
+            dataProviderClass = TestDataProvider.class)
     @Story("Search Engine")
     public void testSearchProduct(String searchQuery) {
         homePage.searchForProduct(searchQuery);

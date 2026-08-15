@@ -5,8 +5,8 @@ import io.qameta.allure.Step;
 
 public class RegisterPage extends BasePage {
 
-    private final Locator phoneRegistrationBtn = locator("//*[@data-id='password-recovery-phone-tab-button']");
-    private final Locator emailRegistrationBtn = locator("//*[@data-id='password-recovery-email-tab-button']");
+    private final Locator phoneRegistrationBtn = locator("(//*[contains(@class,'auth-tabs__btn')])[1]");
+    private final Locator emailRegistrationBtn = locator("(//*[contains(@class,'auth-tabs__btn')])[2]");
 
     private final Locator phoneRegistrationInput = locator("//*[@name='reg_phone']");
     private final Locator passRegistrationPhoneInput = locator("//*[@data-id='register-password-input']");
@@ -28,7 +28,6 @@ public class RegisterPage extends BasePage {
         phoneRegistrationInput.fill(phone);
         passRegistrationPhoneInput.fill(password);
         registrationBtn.click();
-        registrationResult.click();
     }
 
     @Step("Register new user via Email: {email}")
@@ -38,7 +37,6 @@ public class RegisterPage extends BasePage {
         emailRegistrationInput.fill(email);
         passRegistrationEmailInput.fill(password);
         registrationBtn.click();
-        registrationResult.click();
     }
 
     public String getRegistrationResultText() {

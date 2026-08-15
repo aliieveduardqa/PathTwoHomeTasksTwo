@@ -1,6 +1,7 @@
 package data;
 
 import org.testng.annotations.DataProvider;
+import utils.DataGenerator;
 
 public class TestDataProvider {
 
@@ -17,4 +18,14 @@ public class TestDataProvider {
                 {"Gate of olympus"}
         };
     }
+    @DataProvider(name = "registrationData")
+    public static Object[][] getRegistrationData() {
+        String uniqueEmail = DataGenerator.generateUniqueEmail("aliieveduardqa", "sharkscode.com");
+        String password = "222222";
+
+        return new Object[][]{
+                {uniqueEmail, password}
+        };
+    }
+
 }

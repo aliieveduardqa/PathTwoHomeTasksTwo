@@ -16,8 +16,14 @@ public abstract class BasePage {
     }
 
     protected void clickWithWait(Locator locator, String elementName) {
-        logger.info("Waiting for and clicking on: {}", elementName);
-        locator.waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.VISIBLE).setTimeout(10_000));
+        logger.info("Step 1: Waiting for '{}' to be attached to the DOM", elementName);
+        locator.waitFor(new Locator.WaitForOptions()
+                .setState(WaitForSelectorState.ATTACHED)
+                .setTimeout(10_000));
+
+        logger.info("Step 2: Waiting for '{}' to become visible on the screen", elementName);
+        locator.waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.VISIBLE));
+        logger.info("Step 3: Clicking on '{}'", elementName);
         locator.click();
     }
 }

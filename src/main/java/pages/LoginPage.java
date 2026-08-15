@@ -15,6 +15,7 @@ public class LoginPage extends BasePage {
     private final Locator passLoginEmailInput = locator("//*[@name='password_email']");
 
     private final Locator loginBtn = locator("//*[contains(@class,'auth-form__submit')][1]");
+    private final Locator registrationBtn = locator("//*[contains(@class,'reg-form__submit')][1]");
 
     private final Locator errorLoginInputMsg = locator("(//*[@data-id='input-message-error'])[1]");
     private final Locator errorLoginPassInputMsg = locator("(//*[@data-id='input-message-error'])[2]");
@@ -42,6 +43,13 @@ public class LoginPage extends BasePage {
         logger.info("Clicking submit login button");
         loginBtn.click();
     }
+
+    @Step("Click submit registration button without filling fields")
+    public void clickSubmitRegistrationBtn() {
+        logger.info("Clicking submit registration button");
+        registrationBtn.click();
+    }
+
 
     public Locator getErrorLoginInputLocator() { return errorLoginInputMsg; }
     public Locator getErrorPasswordInputLocator() { return errorLoginPassInputMsg; }
