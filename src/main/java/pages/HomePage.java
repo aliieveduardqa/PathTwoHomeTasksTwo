@@ -1,57 +1,44 @@
 package pages;
 
 import com.microsoft.playwright.Locator;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.options.WaitForSelectorState;
+import io.qameta.allure.Step;
 
-public class HomePage {
-    private final Page page;
+public class HomePage extends BasePage {
 
-    private final String loginBtn = "(//*[contains(@class,'header-right__login')])[1]";
-    private final String registerBtn = "//*[@data-id='header-register-click']";
-    private final String payInBtn = "//*[@data-id='header-cashbox-link']";
+    private final Locator loginBtn = locator("(//*[contains(@class,'header-right__login')])[1]");
+    private final Locator registerBtn = locator("//*[@data-gtm-id='ga_header_click_btn_registration']");
+    private final Locator payInBtn = locator("//*[@data-id='header-cashbox-link']");
+    private final Locator headerSearchBtn = locator("(//*[@class='header-search__icon-wrap']//*[@class])[1]");
+    private final Locator searchInputFld = locator("//*[contains(@class,'ui-input__body')]//*[@type]");
+    private final Locator searchGameCount = locator("(//*[@class='searching-lists__title']//span)[2]");
+    private final Locator searchGamePresent = locator("(//*[@class='searching-lists__games']//li)[1]");
 
-    private final String headerSearchBtn = "(//*[@class='header-search__icon-wrap']//*[@class])[1]";
-    private final String searchInputFld = "//*[contains(@class,'ui-input__body')]//*[@type]";
+    private final Locator closedModalWindow = locator("(//*[@data-id='modal-header-close-button']/./*)[1]");
 
-    private final String searchGameCount = "(//*[@class='searching-lists__title']//span)[2]";
-    private final String searchGamePresent = "(//*[@class='searching-lists__games']//li)[1]";
-
-
-    public HomePage(Page page) {
-        this.page = page;
-    }
-
+    @Step("Click on Login Button")
     public void clickLoginBtn() {
-        Locator loginButton = page.locator(loginBtn);
-        loginButton.waitFor(new Locator.WaitForOptions()
-                .setState(WaitForSelectorState.VISIBLE)
-                .setTimeout(10_000));
-        loginButton.click();
+        clickWithWait(loginBtn, "Login Button");
     }
 
+    @Step("Click on Register Button")
     public void clickRegisterBtn() {
-        page.locator(registerBtn).click();
+        clickWithWait(registerBtn, "Register Button");
     }
 
-    public Locator getPayInButton() {
-        return page.locator(payInBtn);
-    }
-
-    public Locator getLogoutButton() {
-        return page.locator(loginBtn);
-    }
-
+    @Step("Search for product: {productName}")
     public void searchForProduct(String productName) {
-        page.locator(headerSearchBtn).click();
-        page.locator(searchInputFld).fill(productName);
+        logger.info("Searching for product: {}", productName);
+        headerSearchBtn.click();
+        searchInputFld.fill(productName);
     }
 
-    public Locator getSearchCounterLocator() {
-        return page.locator(searchGameCount);
+    @Step("Click on Closed Modal Button")
+    public void clickClosedModalBtn() {
+        clickWithWait(closedModalWindow, "[x] Modal Button");
     }
 
-    public Locator getSearchGamePresentLocator() {
-        return page.locator(searchGamePresent);
-    }
+    public Locator getPayInButton() { return payInBtn; }
+    public Locator getLogoutButton() { return loginBtn; }
+    public Locator getSearchCounterLocator() { return searchGameCount; }
+    public Locator getSearchGamePresentLocator() { return searchGamePresent; }
 }

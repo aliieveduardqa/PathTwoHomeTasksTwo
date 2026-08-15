@@ -1,59 +1,64 @@
 package pages;
 
 import com.microsoft.playwright.Locator;
-import com.microsoft.playwright.Page;
+import io.qameta.allure.Step;
 
-public class LoginPage {
-    private final Page page;
+public class LoginPage extends BasePage {
 
-    private final String phoneLoginBtn = "//*[@data-id='password-recovery-phone-tab-button']";
-    private final String emailLoginBtn = "//*[@data-id='password-recovery-email-tab-button']";
+    private final Locator phoneLoginBtn = locator("//*[@data-id='password-recovery-phone-tab-button']");
+    private final Locator emailLoginBtn = locator("//*[@data-id='password-recovery-email-tab-button']");
 
-    private final String phoneLoginInput = "//*[@name='auth_phone']";
-    private final String passLoginPhoneInput = "//*[@name='password_phone']";
+    private final Locator phoneLoginInput = locator("//*[@name='auth_phone']");
+    private final Locator passLoginPhoneInput = locator("//*[@name='password_phone']");
 
-    private final String emailLoginInput = "//*[@name='auth_email']";
-    private final String passLoginEmailInput = "//*[@name='password_email']";
+    private final Locator emailLoginInput = locator("//*[@name='auth_email']");
+    private final Locator passLoginEmailInput = locator("//*[@name='password_email']");
 
-    private final String loginBtn = "//*[contains(@class,'auth-form__submit')][1]";
+    private final Locator loginBtn = locator("//*[contains(@class,'auth-form__submit')][1]");
+    private final Locator registrationBtn = locator("//*[contains(@class,'reg-form__submit')][1]");
 
-    private final String errorLoginInputMsg = "(//*[@data-id='input-message-error'])[1]";
-    private final String errorLoginPassInputMsg = "(//*[@data-id='input-message-error'])[2]";
+    private final Locator errorLoginInputMsg = locator("(//*[@data-id='input-message-error'])[1]");
+    private final Locator errorLoginPassInputMsg = locator("(//*[@data-id='input-message-error'])[2]");
 
-    public LoginPage(Page page) {
-        this.page = page;
-    }
-
+    @Step("Login via Phone using: {phone}")
     public void phoneLogin(String phone, String password) {
-        page.locator(phoneLoginBtn).click();
-        page.locator(phoneLoginInput).fill(phone);
-        page.locator(passLoginPhoneInput).fill(password);
-        page.locator(loginBtn).click();
+        logger.info("Logging in with phone: {}", phone);
+        phoneLoginBtn.click();
+        phoneLoginInput.fill(phone);
+        passLoginPhoneInput.fill(password);
+        loginBtn.click();
     }
 
+    @Step("Login via Email using: {email}")
     public void emailLogin(String email, String password) {
-        page.locator(emailLoginBtn).click();
-        page.locator(emailLoginInput).fill(email);
-        page.locator(passLoginEmailInput).fill(password);
-        page.locator(loginBtn).click();
-    }
-    public void clickSubmitLogiBtn() {
-        page.locator(loginBtn).click();
+        logger.info("Logging in with email: {}", email);
+        emailLoginBtn.click();
+        emailLoginInput.fill(email);
+        passLoginEmailInput.fill(password);
+        loginBtn.click();
     }
 
-    public Locator getErrorLoginInputLocator() {
-        return page.locator(errorLoginInputMsg);
+    @Step("Click submit login button without filling fields")
+    public void clickSubmitLoginBtn() {
+        logger.info("Clicking submit login button");
+        loginBtn.click();
     }
 
-    public Locator getErrorPasswordInputLocator() {
-        return page.locator(errorLoginPassInputMsg);
+    @Step("Click submit registration button without filling fields")
+    public void clickSubmitRegistrationBtn() {
+        logger.info("Clicking submit registration button");
+        registrationBtn.click();
     }
+
+
+    public Locator getErrorLoginInputLocator() { return errorLoginInputMsg; }
+    public Locator getErrorPasswordInputLocator() { return errorLoginPassInputMsg; }
 
     public String getErrorInputMessage() {
-        return page.locator(errorLoginInputMsg).textContent().trim();
+        return errorLoginInputMsg.textContent().trim();
     }
 
     public String getErrorPasswordInputMessage() {
-        return page.locator(errorLoginPassInputMsg).textContent().trim();
+        return errorLoginPassInputMsg.textContent().trim();
     }
 }
