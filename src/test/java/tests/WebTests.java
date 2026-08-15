@@ -49,6 +49,8 @@ public class WebTests extends BaseTest {
     @Test(description = "Verify validation messages on empty login")
     @Story("Login validation")
     public void testLoginWithOutFields() {
+        homePage.clickRegisterBtn();
+
         loginPage.clickSubmitLoginBtn();
 
         assertThat(loginPage.getErrorLoginInputLocator()).hasText("Обов'язкове поле");
