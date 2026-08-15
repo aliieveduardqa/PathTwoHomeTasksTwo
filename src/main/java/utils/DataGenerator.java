@@ -1,10 +1,10 @@
 package utils;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 public class DataGenerator {
-
     private static final Random random = new Random();
 
     private DataGenerator() {

@@ -37,7 +37,7 @@ public class LoginPage {
         page.locator(passLoginEmailInput).fill(password);
         page.locator(loginBtn).click();
     }
-    public void clickSubmitLogiBtn() {
+    public void clickSubmitLoginBtn() {
         page.locator(loginBtn).click();
     }
 

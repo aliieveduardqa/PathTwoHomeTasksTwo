@@ -6,6 +6,7 @@ import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import utils.ConfigReader;
+import utils.PageManager;
 
 import java.nio.file.Paths;
 
@@ -42,6 +43,7 @@ public class BaseTest {
                 .setSources(true));
 
         page = context.newPage();
+        PageManager.setPage(page);
         page.navigate(ConfigReader.getProperty("baseUrl"));
     }
 

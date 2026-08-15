@@ -31,7 +31,11 @@ public class HomePage {
     }
 
     public void clickRegisterBtn() {
-        page.locator(registerBtn).click();
+        Locator registerButton = page.locator(registerBtn);
+        registerButton.waitFor(new Locator.WaitForOptions()
+                .setState(WaitForSelectorState.VISIBLE)
+                .setTimeout(10_000));
+        registerButton.click();
     }
 
     public Locator getPayInButton() {

@@ -40,7 +40,7 @@ public class WebTests extends BaseTest {
     @Test
     public void testLoginWithOutFields() {
         page.waitForTimeout(5_000);
-        loginPage.clickSubmitLogiBtn();
+        loginPage.clickSubmitLoginBtn();
         assertThat(loginPage.getErrorLoginInputLocator()).hasText("Обов'язкове поле");
         assertThat(loginPage.getErrorPasswordInputLocator()).hasText("Обов'язкове поле");
     }
