@@ -1,7 +1,6 @@
 package pages;
 
 import com.microsoft.playwright.Locator;
-import io.qameta.allure.Step;
 
 public class LoginPage extends BasePage {
 
@@ -20,39 +19,45 @@ public class LoginPage extends BasePage {
     private final Locator errorLoginInputMsg = locator("(//*[@data-id='input-message-error'])[1]");
     private final Locator errorLoginPassInputMsg = locator("(//*[@data-id='input-message-error'])[2]");
 
-    @Step("Login via Phone using: {phone}")
-    public void phoneLogin(String phone, String password) {
-        logger.info("Logging in with phone: {}", phone);
+    public LoginPage clickPhoneTab() {
         phoneLoginBtn.click();
-        phoneLoginInput.fill(phone);
-        passLoginPhoneInput.fill(password);
-        loginBtn.click();
+        return this;
     }
 
-    @Step("Login via Email using: {email}")
-    public void emailLogin(String email, String password) {
-        logger.info("Logging in with email: {}", email);
+    public LoginPage clickEmailTab() {
         emailLoginBtn.click();
+        return this;
+    }
+
+    public LoginPage fillPhone(String phone) {
+        phoneLoginInput.fill(phone);
+        return this;
+    }
+
+    public LoginPage fillPhonePassword(String password) {
+        passLoginPhoneInput.fill(password);
+        return this;
+    }
+
+    public LoginPage fillEmail(String email) {
         emailLoginInput.fill(email);
+        return this;
+    }
+
+    public LoginPage fillEmailPassword(String password) {
         passLoginEmailInput.fill(password);
-        loginBtn.click();
+        return this;
     }
 
-    @Step("Click submit login button without filling fields")
-    public void clickSubmitLoginBtn() {
-        logger.info("Clicking submit login button");
+    public LoginPage clickLoginButton() {
         loginBtn.click();
+        return this;
     }
 
-    @Step("Click submit registration button without filling fields")
-    public void clickSubmitRegistrationBtn() {
-        logger.info("Clicking submit registration button");
+    public LoginPage clickRegistrationButton() {
         registrationBtn.click();
+        return this;
     }
-
-
-    public Locator getErrorLoginInputLocator() { return errorLoginInputMsg; }
-    public Locator getErrorPasswordInputLocator() { return errorLoginPassInputMsg; }
 
     public String getErrorInputMessage() {
         return errorLoginInputMsg.textContent().trim();

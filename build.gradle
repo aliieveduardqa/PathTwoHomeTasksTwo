@@ -49,8 +49,7 @@ tasks.withType(JavaCompile) {
 }
 
 test {
-    useTestNG() {
-    }
+    useTestNG()
 
     testLogging {
         events "passed", "skipped", "failed"

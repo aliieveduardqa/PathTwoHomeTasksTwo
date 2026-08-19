@@ -1,7 +1,6 @@
 package pages;
 
 import com.microsoft.playwright.Locator;
-import io.qameta.allure.Step;
 
 public class ProfilePage extends BasePage {
 
@@ -11,13 +10,28 @@ public class ProfilePage extends BasePage {
     private final Locator profileSettingsLogoutBtn = locator("//*[@data-id='profile-settings-logout-button']");
     private final Locator profileSettingsSubmitBtn = locator("//*[@data-id='profile-logout-submit-button']");
 
-    @Step("Logout user from profile")
-    public void logoutUser() {
-        logger.info("Logging out user");
+    public ProfilePage clickBurgerButton() {
         burgerBtn.click();
+        return this;
+    }
+
+    public ProfilePage clickUserPanelSetting() {
         userPanelSettingBtn.click();
+        return this;
+    }
+
+    public ProfilePage clickProfileSettingsTab() {
         profileSettingsTabBtn.click();
+        return this;
+    }
+
+    public ProfilePage clickLogoutButton() {
         profileSettingsLogoutBtn.click();
+        return this;
+    }
+
+    public ProfilePage clickSubmitLogoutButton() {
         profileSettingsSubmitBtn.click();
+        return this;
     }
 }

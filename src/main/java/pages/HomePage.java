@@ -1,7 +1,6 @@
 package pages;
 
 import com.microsoft.playwright.Locator;
-import io.qameta.allure.Step;
 
 public class HomePage extends BasePage {
 
@@ -12,33 +11,46 @@ public class HomePage extends BasePage {
     private final Locator searchInputFld = locator("//*[contains(@class,'ui-input__body')]//*[@type]");
     private final Locator searchGameCount = locator("(//*[@class='searching-lists__title']//span)[2]");
     private final Locator searchGamePresent = locator("(//*[@class='searching-lists__games']//li)[1]");
-
     private final Locator closedModalWindow = locator("(//*[@data-id='modal-header-close-button']/./*)[1]");
 
-    @Step("Click on Login Button")
-    public void clickLoginBtn() {
+    public HomePage clickLoginButton() {
         clickWithWait(loginBtn, "Login Button");
+        return this;
     }
 
-    @Step("Click on Register Button")
-    public void clickRegisterBtn() {
+    public HomePage clickRegisterButton() {
         clickWithWait(registerBtn, "Register Button");
+        return this;
     }
 
-    @Step("Search for product: {productName}")
-    public void searchForProduct(String productName) {
-        logger.info("Searching for product: {}", productName);
-        headerSearchBtn.click();
+    public HomePage clickHeaderSearchButton() {
+        clickWithWait(headerSearchBtn, "Search game Tab");
+        return this;
+    }
+
+    public HomePage fillSearchInput(String productName) {
         searchInputFld.fill(productName);
+        return this;
     }
 
-    @Step("Click on Closed Modal Button")
-    public void clickClosedModalBtn() {
+    public HomePage clickCloseModalButton() {
         clickWithWait(closedModalWindow, "[x] Modal Button");
+        return this;
     }
 
-    public Locator getPayInButton() { return payInBtn; }
-    public Locator getLogoutButton() { return loginBtn; }
-    public Locator getSearchCounterLocator() { return searchGameCount; }
-    public Locator getSearchGamePresentLocator() { return searchGamePresent; }
+    public boolean isPayInButtonVisible() {
+        return payInBtn.isVisible();
+    }
+
+    public boolean isLoginButtonVisible() {
+        return loginBtn.isVisible();
+    }
+
+    public String getSearchGameCountText() {
+        return searchGameCount.textContent().trim();
+    }
+
+    public boolean isSearchGamePresent() {
+        return searchGamePresent.isVisible();
+    }
 }
