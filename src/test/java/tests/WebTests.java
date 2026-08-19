@@ -1,35 +1,33 @@
 package tests;
 
 import base.BaseTest;
+import business.*;
 import data.TestDataProvider;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
+import lombok.SneakyThrows;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import pages.HomePage;
-import pages.LoginPage;
-import pages.ProfilePage;
-import pages.RegisterPage;
 
-import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static java.lang.Thread.sleep;
 
 @Epic("Web Shop Portal Automation")
 @Feature("User Authentication and Interactions")
 public class WebTests extends BaseTest {
 
-    private HomePage homePage;
-    private LoginPage loginPage;
-    private RegisterPage registerPage;
-    private ProfilePage profilePage;
+    private SCHomePageBO scHomePageBO;
+    private SCLoginPageBO scLoginPageBO;
+    private SCRegistrationPageBO scRegistrationPageBO;
+    private SCProfilePageBO scProfilePageBO;
 
     @BeforeMethod
-    public void initPages() {
-        homePage = new HomePage();
-        loginPage = new LoginPage();
-        registerPage = new RegisterPage();
-        profilePage = new ProfilePage();
+    public void initBusinessObjects() {
+        scHomePageBO = new SCHomePageBO();
+        scLoginPageBO = new SCLoginPageBO();
+        scRegistrationPageBO = new SCRegistrationPageBO();
+        scProfilePageBO = new SCProfilePageBO();
     }
 
     @Test(
@@ -39,38 +37,39 @@ public class WebTests extends BaseTest {
     )
     @Story("Registration")
     public void testSuccessfulRegistration(String email, String password) {
-        homePage.clickRegisterBtn();
+        scHomePageBO.openRegistrationForm();
 
-        logger.info("Registering new user with email: {}", email);
-        registerPage.registerEmailUser(email, password);
+        scRegistrationPageBO.registerEmailUser(email, password);
 
-        homePage.clickClosedModalBtn();
-        homePage.clickClosedModalBtn();
+        scHomePageBO.closeModalWindow()
+                .closeModalWindow();
 
-        assertThat(homePage.getPayInButton())
-                .isVisible(new com.microsoft.playwright.assertions.LocatorAssertions.IsVisibleOptions().setTimeout(15_000));
+        Assert.assertTrue(scHomePageBO.isUserLoggedIn(),
+                "Pay In button should be visible after successful registration");
     }
 
     @Test(description = "Verify validation messages on empty login")
     @Story("Login validation")
     public void testLoginWithOutFields() {
-        homePage.clickLoginBtn();
+        scHomePageBO.openLoginForm();
+        scLoginPageBO.submitEmptyLoginForm();
 
-        loginPage.clickSubmitLoginBtn();
-
-        assertThat(loginPage.getErrorLoginInputLocator()).hasText("Обов'язкове поле");
-        assertThat(loginPage.getErrorPasswordInputLocator()).hasText("Обов'язкове поле");
+        Assert.assertEquals(scLoginPageBO.getLoginErrorMessage(), "Обов'язкове поле",
+                "Incorrect login input error message");
+        Assert.assertEquals(scLoginPageBO.getPasswordErrorMessage(), "Обов'язкове поле",
+                "Incorrect password input error message");
     }
 
     @Test(description = "Verify validation messages on empty Registration fields")
     @Story("Registration validation")
     public void testRegistrationWithOutFields() {
-        homePage.clickRegisterBtn();
+        scHomePageBO.openRegistrationForm();
+        scRegistrationPageBO.submitEmptyRegistrationForm();
 
-        loginPage.clickSubmitRegistrationBtn();
-
-        assertThat(loginPage.getErrorLoginInputLocator()).hasText("Обов'язкове поле");
-        assertThat(loginPage.getErrorPasswordInputLocator()).hasText("Обов'язкове поле");
+        Assert.assertEquals(scLoginPageBO.getLoginErrorMessage(), "Обов'язкове поле",
+                "Incorrect login input error message");
+        Assert.assertEquals(scLoginPageBO.getPasswordErrorMessage(), "Обов'язкове поле",
+                "Incorrect password input error message");
     }
 
     @Test(
@@ -79,10 +78,11 @@ public class WebTests extends BaseTest {
             dataProviderClass = TestDataProvider.class)
     @Story("Login")
     public void testSuccessfulLogin(String email, String password) {
-        homePage.clickLoginBtn();
-        loginPage.emailLogin(email, password);
+        scHomePageBO.openLoginForm();
+        scLoginPageBO.loginViaEmail(email, password);
 
-        assertThat(homePage.getPayInButton()).isVisible();
+        Assert.assertTrue(scHomePageBO.isUserLoggedIn(),
+                "Pay In button should be visible after successful login");
     }
 
     @Test(
@@ -91,12 +91,13 @@ public class WebTests extends BaseTest {
             dataProviderClass = TestDataProvider.class)
     @Story("Logout")
     public void testLogout(String email, String password) {
-        homePage.clickLoginBtn();
-        loginPage.emailLogin(email, password);
+        scHomePageBO.openLoginForm();
+        scLoginPageBO.loginViaEmail(email, password);
 
-        profilePage.logoutUser();
+        scProfilePageBO.logoutUser();
 
-        assertThat(homePage.getLogoutButton()).isVisible();
+        Assert.assertTrue(scHomePageBO.isLoginButtonVisible(),
+                "Login button should be visible after logout");
     }
 
     @Test(
@@ -105,16 +106,14 @@ public class WebTests extends BaseTest {
             dataProviderClass = TestDataProvider.class)
     @Story("Search Engine")
     public void testSearchProduct(String searchQuery) {
-        homePage.searchForProduct(searchQuery);
+        scHomePageBO.searchForProduct(searchQuery);
 
-        homePage.getSearchCounterLocator().waitFor();
-
-        String countText = homePage.getSearchCounterLocator().textContent().trim();
+        String countText = scHomePageBO.getSearchGamesCount();
         int gameCount = Integer.parseInt(countText);
 
         logger.info("Games found: {}", gameCount);
-        Assert.assertTrue(gameCount > 0, "Error: Number of games found must be greater than 0");
 
-        assertThat(homePage.getSearchGamePresentLocator()).isVisible();
+        Assert.assertTrue(gameCount > 0, "Error: Number of games found must be greater than 0");
+        Assert.assertTrue(scHomePageBO.isSearchedGameFound(), "Search game result should be visible on the list");
     }
 }
