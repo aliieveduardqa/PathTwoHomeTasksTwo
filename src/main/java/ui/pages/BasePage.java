@@ -1,4 +1,4 @@
-package pages;
+package ui.pages;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
@@ -6,7 +6,7 @@ import com.microsoft.playwright.options.WaitForSelectorState;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.PageManager;
+import ui.utils.PageManager;
 
 import static java.lang.Thread.sleep;
 

@@ -1,7 +1,7 @@
 package data;
 
 import org.testng.annotations.DataProvider;
-import utils.DataGenerator;
+import common.utils.DataGenerator;
 
 public class TestDataProvider {
 

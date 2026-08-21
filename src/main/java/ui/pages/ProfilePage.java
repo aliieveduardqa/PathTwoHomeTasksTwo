@@ -1,4 +1,4 @@
-package pages;
+package ui.pages;
 
 import com.microsoft.playwright.Locator;
 

@@ -1,21 +1,23 @@
-package tests;
+package tests.ui;
 
-import base.BaseTest;
-import business.*;
+import base.BaseUITest;
 import data.TestDataProvider;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
-import lombok.SneakyThrows;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import ui.business.SCHomePageBO;
+import ui.business.SCLoginPageBO;
+import ui.business.SCProfilePageBO;
+import ui.business.SCRegistrationPageBO;
 
 import static java.lang.Thread.sleep;
 
 @Epic("Web Shop Portal Automation")
 @Feature("User Authentication and Interactions")
-public class WebTests extends BaseTest {
+public class WebTest extends BaseUITest {
 
     private SCHomePageBO scHomePageBO;
     private SCLoginPageBO scLoginPageBO;
