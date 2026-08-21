@@ -1,9 +1,9 @@
-package business;
+package ui.business;
 
 import io.qameta.allure.Step;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pages.RegisterPage;
+import ui.pages.RegisterPage;
 
 public class SCRegistrationPageBO {
 
