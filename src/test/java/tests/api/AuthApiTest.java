@@ -22,6 +22,8 @@ public class AuthApiTest extends BaseApiTest {
 
     private AuthFacade authFacade;
     private PromoCodeService promoCodeService;
+    private String sharedEmail;
+    private String sharedPassword;
 
     @BeforeMethod
     public void setup() {
@@ -38,36 +40,21 @@ public class AuthApiTest extends BaseApiTest {
     @Test(description = "1. Verify successful user registration", dataProvider = "registrationData", dataProviderClass = TestDataProvider.class)
     @Story("Registration")
     public void testUserRegistration(String email, String password) {
+        this.sharedEmail = email;
+        this.sharedPassword = password;
+
         var response = authFacade.emailRegisterAndSaveSession(email, password);
+        SessionContext.setEmail(email);
 
         Assert.assertEquals(response.statusCode(), 200, "Registration failed");
         Assert.assertNotNull(SessionContext.getToken(), "Token was not saved to session context");
     }
 
-    @Test(description = "2. Verify successful logout", dataProvider = "validLoginData", dataProviderClass = TestDataProvider.class)
-    @Story("Logout")
-    public void testUserLogout(String email, String password) {
-        authFacade.emailLogin(email, password);
-        var response = authFacade.logout();
-
-        Assert.assertEquals(response.statusCode(), 200, "Logout failed");
-    }
-
-    @Test(description = "3. Verify successful login for existing user", dataProvider = "validLoginData", dataProviderClass = TestDataProvider.class)
-    @Story("Login")
-    public void testUserLogin(String email, String password) {
-        var response = authFacade.emailLogin(email, password);
-
-        Assert.assertEquals(response.statusCode(), 200, "Login failed");
-        Assert.assertNotNull(SessionContext.getToken(), "Token was not updated in session after login");
-    }
-
-    @Test(description = "4. Verify promo code application and bonus activation for an existing user", dataProvider = "validLoginData", dataProviderClass = TestDataProvider.class)
+    @Test(dependsOnMethods = "testUserRegistration", description = "2. Verify promo code application for a NEW user")
     @Story("Promo Code")
-    public void testApplyPromoCode(String email, String password) {
-        var loginResponse = authFacade.emailLogin(email, password);
+    public void testApplyPromoCode() {
+        var loginResponse = authFacade.emailLogin(sharedEmail, sharedPassword);
         Assert.assertEquals(loginResponse.statusCode(), 200, "Precondition failed: Login was unsuccessful");
-
         PromoCodeRequest promoPayload = PromoCodeRequest.builder().code("075D800A28").build();
 
         var response = promoCodeService.postApplyPromoCode(promoPayload, SessionContext.getToken());
@@ -81,5 +68,22 @@ public class AuthApiTest extends BaseApiTest {
 
     }
 
+    @Test(description = "3. Verify successful logout", dataProvider = "validLoginData", dataProviderClass = TestDataProvider.class)
+    @Story("Logout")
+    public void testUserLogout(String email, String password) {
+        var loginResponse = authFacade.emailLogin(email, password);
+        Assert.assertEquals(loginResponse.statusCode(), 200, "Login failed");
 
+        authFacade.logout();
+        Assert.assertNull(SessionContext.getToken(), "Token should be null after logout");
+    }
+
+    @Test(description = "4. Verify successful login for existing user", dataProvider = "validLoginData", dataProviderClass = TestDataProvider.class)
+    @Story("Login")
+    public void testUserLogin(String email, String password) {
+        var response = authFacade.emailLogin(email, password);
+
+        Assert.assertEquals(response.statusCode(), 200, "Login failed");
+        Assert.assertNotNull(SessionContext.getToken(), "Token was not updated in session after login");
+    }
 }

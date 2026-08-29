@@ -2,6 +2,7 @@ package api.services;
 
 import api.models.request.AuthRequest;
 import api.models.request.RegistrationRequest;
+import api.utils.SessionContext;
 import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -27,11 +28,4 @@ public class AuthService {
                 .post("/auth/login");
     }
 
-    @Step("Send POST request to /auth/logout")
-    public Response postLogout(String token) {
-        return RestAssured.given()
-                .header("Authorization", "Bearer " + token)
-                .when()
-                .post("/auth/logout");
-    }
 }

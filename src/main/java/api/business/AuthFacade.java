@@ -31,9 +31,9 @@ public class AuthFacade {
         return response;
     }
 
-    @Step("Logout current user")
-    public Response logout() {
-        return authService.postLogout(SessionContext.getToken());
+    @Step("Logout current user locally (stateless)")
+    public void logout() {
+        SessionContext.clear();
     }
 
     @Step("Login user")
